@@ -1,0 +1,17 @@
+{
+  "name": "acme-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "sync-refs": "node scripts/sync-refs.mjs",
+    "build": "pnpm sync-refs && tsc -b",
+    "dev": "tsc -b --watch",
+    "typecheck": "node scripts/sync-refs.mjs --check && tsc -b",
+    "clean": "tsc -b --clean && node scripts/clean.mjs"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  }
+}

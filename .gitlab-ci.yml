@@ -1,0 +1,45 @@
+# Untested on a real GitLab instance: verify cache and artifact behaviour on first run.
+default:
+  image: node:22
+  before_script:
+    - corepack enable
+    - pnpm config set store-dir .pnpm-store
+
+stages: [build, test]
+
+variables:
+  # Bump the suffix to invalidate the build cache by hand.
+  BUILD_CACHE_VERSION: "1"
+
+build:
+  stage: build
+  cache:
+    - key:
+        files: [pnpm-lock.yaml]
+        prefix: pnpm-store
+      paths: [.pnpm-store]
+    # dist and tsbuildinfo are one cache entry: either alone is useless.
+    - key:
+        files: [pnpm-lock.yaml]
+        prefix: tsc-$BUILD_CACHE_VERSION
+      paths:
+        - packages/*/dist
+        - packages/*/tsconfig.tsbuildinfo
+        - apps/*/dist
+        - apps/*/tsconfig.tsbuildinfo
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm typecheck   # sync-refs --check, then tsc -b
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - packages/*/dist
+      - apps/*/dist
+
+# Example consumer: reuses dist from the build job, no rebuild.
+# test:
+#   stage: test
+#   needs: [build]
+#   script:
+#     - pnpm install --frozen-lockfile --offline
+#     - pnpm -r test

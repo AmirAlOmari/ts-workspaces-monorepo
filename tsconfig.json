@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "apps/cli"
+    },
+    {
+      "path": "packages/core"
+    },
+    {
+      "path": "packages/utils"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@acme/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@acme/core": "workspace:*",
+    "@acme/utils": "workspace:*"
+  },
+  "main": "./dist/index.js"
+}
