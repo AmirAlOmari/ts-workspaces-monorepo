@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build (TypeScript ${{ matrix.typescript }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        typescript: ["7.0.2", "6.0.3"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # pnpm version comes from "packageManager"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The lockfile pins one TypeScript version; the matrix swaps it for this job only.
+      - name: Use TypeScript ${{ matrix.typescript }}
+        run: pnpm add --workspace-root --save-dev typescript@${{ matrix.typescript }}
+
+      # dist and tsbuildinfo are one cache entry: either alone is useless.
+      - name: Restore tsc build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            packages/*/dist
+            packages/*/tsconfig.tsbuildinfo
+            apps/*/dist
+            apps/*/tsconfig.tsbuildinfo
+          key: tsc-${{ matrix.typescript }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            tsc-${{ matrix.typescript }}-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      - name: Typecheck (sync-refs --check, then tsc -b)
+        run: pnpm typecheck
+
+      - name: Second build must be a no-op
+        run: |
+          pnpm exec tsc -b --verbose | tee build.log
+          ! grep -q "Building project" build.log
+
+      - name: Run the CLI from built output
+        run: node apps/cli/dist/index.js
+
+      - name: Run the CLI from source via the export condition
+        run: node --conditions=@acme/source apps/cli/src/index.ts
