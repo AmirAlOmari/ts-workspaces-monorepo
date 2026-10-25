@@ -16,5 +16,5 @@ Setup: 40 packages, 1,720 files, 5 dependency layers, 4 cores, 16 GiB, warm stor
 
 - ESLint and Prettier exit 1 against generated code; timing is a fair scan time, not a clean-pass time.
 - ESLint and Oxlint run different rule sets.
-- The standalone variant numbers in [4](04-toolchain.md) and the `node --test` vs Vitest numbers in [5](05-testing.md) come from a scratch copy of this repo and are not reproduced by `bench/run.mjs` yet. Adding them is on the [roadmap](09-roadmap.md).
+- The standalone variant numbers in [4](04-toolchain.md) and the `node --test` vs Vitest numbers kept in [5](05-testing.md#why-the-node-runner-was-dropped) come from a scratch copy of this repo and are not reproduced by `bench/run.mjs` yet. Adding them is on the [roadmap](09-roadmap.md).
 - Synthetic code is lighter than real code; use the shape of the numbers, not the absolute values.

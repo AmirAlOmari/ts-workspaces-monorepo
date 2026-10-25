@@ -34,7 +34,7 @@ TS 6 language server and VS Code with the TS 7 server: **to verify**.
 
 ## Tests and the build
 
-`*.test.ts` and `*.spec.ts` files sit beside sources and are excluded from the build projects (`exclude` in each `tsconfig.json`), so `dist` never contains tests. Each package that has tests gets a `tsconfig.test.json` (`noEmit`, not composite, `allowImportingTsExtensions`, `erasableSyntaxOnly`) checked by `pnpm typecheck:tests`. See [5](05-testing.md).
+`*.test.ts` files sit beside sources and are excluded from the build projects (`exclude` in each `tsconfig.json`), so `dist` never contains tests. Each package that has tests gets a `tsconfig.test.json` (`noEmit`, not composite, `allowImportingTsExtensions`, `erasableSyntaxOnly`) checked by `pnpm typecheck:tests`. See [5](05-testing.md).
 
 ## Rules that keep the boundary honest
 

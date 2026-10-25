@@ -1,7 +1,19 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
+import { expect, test, vi } from "vitest";
 import { double } from "./index.ts";
 
 test("double uses @acme/core through the workspace link", () => {
-  assert.deepEqual(double({ x: 1, y: 2 }), { x: 2, y: 4 });
+  expect(double({ x: 1, y: 2 })).toEqual({ x: 2, y: 4 });
+});
+
+test("module mocks replace a workspace dependency", async () => {
+  vi.resetModules();
+  vi.doMock("@acme/core", () => ({ add: vi.fn(() => ({ x: 0, y: 0 })) }));
+  const { double: mocked } = await import("./index.ts");
+  expect(mocked({ x: 1, y: 2 })).toMatchInlineSnapshot(`
+    {
+      "x": 0,
+      "y": 0,
+    }
+  `);
+  vi.doUnmock("@acme/core");
 });

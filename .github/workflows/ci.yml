@@ -52,7 +52,7 @@ jobs:
       - name: Format and lint (Oxfmt, Oxlint type-aware)
         run: pnpm fmt:check && pnpm lint
 
-      - name: Tests (node --test; type-check the test files first)
+      - name: Tests (Vitest; type-check the test files first)
         run: pnpm typecheck:tests && pnpm test
 
       - name: Second build must be a no-op
@@ -66,20 +66,7 @@ jobs:
       - name: Run the CLI from source via the export condition
         run: node --conditions=@acme/source apps/cli/src/index.ts
 
-  # Opt-in script sets. The standalone pipeline above stays the reference.
-  vitest:
-    name: vitest:* (opt-in)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm vitest:test
-
+  # Opt-in script set. The standalone pipeline above stays the reference.
   vite-poc:
     name: vp:* (opt-in)
     runs-on: ubuntu-latest

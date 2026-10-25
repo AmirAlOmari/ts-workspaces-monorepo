@@ -8,7 +8,7 @@ A reusable starting point for TypeScript projects: pnpm workspaces for linking, 
 | [2. TypeScript: references, caching, parallelism](02-typescript.md) | How `tsc -b` works here, TS 6 vs TS 7, editor modes                        |
 | [3. pnpm workspaces and resolution](03-pnpm.md)                     | `workspace:*`, `exports`, the source condition, why no `paths`             |
 | [4. Toolchain: standalone default, Vite+ opt-in](04-toolchain.md)   | Oxlint, Oxfmt, `tsc -b`, versus `vp`; the diff, pros and cons, where to go |
-| [5. Testing: node --test default, Vitest opt-in](05-testing.md)     | Which runner when, the pitfalls, the script sets                           |
+| [5. Testing: Vitest](05-testing.md)                                 | Which runner when, the pitfalls, why the Node runner was dropped           |
 | [6. CI](06-ci.md)                                                   | GitHub Actions and GitLab, caching, what stays untested                    |
 | [7. Benchmarks](07-benchmarks.md)                                   | Measured numbers and how to rerun them                                     |
 | [8. Using this as a template](08-bootstrap.md)                      | Start a project, add a package, upgrade tools                              |

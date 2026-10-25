@@ -25,14 +25,14 @@ A sibling import (`import { add } from "@acme/core"`) resolves like any dependen
 The **source condition** `@acme/source` comes first:
 
 - Editors and `tsc` get it from `customConditions` in the base config.
-- Node uses `--conditions=@acme/source` and runs sources directly with type stripping, no build. `pnpm test` relies on this, and the flag is inherited by child processes.
+- Node uses `--conditions=@acme/source` and runs sources directly with type stripping, no build. CI runs the CLI this way to cover the Node path, and the flag is inherited by child processes.
 - Vite and Vitest need `ssr.resolve.conditions: ["@acme/source"]`; a plain `resolve.conditions` is not enough for the test runner.
 
 Keep the name scoped. A bare `source` can pull other packages' raw sources out of `node_modules`.
 
 ## Source files Node can run
 
-Node's type stripping needs explicit `.ts` extensions on relative imports and erasable-only syntax (no enums, namespaces, parameter properties). Test files follow this (`import ... from "./index.ts"`, enforced by `erasableSyntaxOnly` in `tsconfig.test.json`). Production sources that only consume packages by name need no extension. If a package starts using relative imports, add `rewriteRelativeImportExtensions` so `tsc` emits `.js`. This was reasoned, **to verify during implementation** for production sources.
+Node's type stripping needs explicit `.ts` extensions on relative imports and erasable-only syntax (no enums, namespaces, parameter properties). Test files import siblings with `.ts` (allowed by `allowImportingTsExtensions` in `tsconfig.test.json`), which also keeps them runnable under type stripping. Production sources that only consume packages by name need no extension. If a package starts using relative imports, add `rewriteRelativeImportExtensions` so `tsc` emits `.js`. This was reasoned, **to verify during implementation** for production sources.
 
 ## Adding a dependency
 
