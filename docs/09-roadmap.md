@@ -1,6 +1,6 @@
 # 9. Roadmap and open questions
 
-Prev: [8. Template](08-bootstrap.md) · Index: [book](README.md)
+Prev: [8. Template](08-bootstrap.md) · Next: [10. Nx](10-nx.md) · Index: [book](README.md)
 
 ## Not verified yet
 
@@ -17,7 +17,7 @@ Prev: [8. Template](08-bootstrap.md) · Index: [book](README.md)
 - Coverage with Vitest.
 - Package publishing (changesets or similar) and bundling for libraries that ship.
 - A second, non-library demo app (HTTP service) and a browser demo for Vitest DOM mode.
-- Task caching beyond `tsc -b` (remote cache) if the graph grows.
+- Task caching beyond `tsc -b`: see [10](10-nx.md); Nx for Vitest/lint/codegen targets, Bazel later.
 - Pre-commit hook running `pnpm fmt:check` and `pnpm lint`.
 
 Return to the [index](README.md).
