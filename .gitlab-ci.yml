@@ -1,6 +1,6 @@
 # Untested on a real GitLab instance: verify cache and artifact behaviour on first run.
 default:
-  image: node:22
+  image: node:24
   before_script:
     - corepack enable
     - pnpm config set store-dir .pnpm-store
