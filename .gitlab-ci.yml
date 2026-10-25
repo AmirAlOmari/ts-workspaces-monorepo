@@ -30,6 +30,10 @@ build:
   script:
     - pnpm install --frozen-lockfile
     - pnpm typecheck # sync-refs --check, then tsc -b
+    - pnpm fmt:check
+    - pnpm lint
+    - pnpm typecheck:tests
+    - pnpm test
   artifacts:
     expire_in: 1 day
     paths:

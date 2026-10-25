@@ -7,7 +7,16 @@
     "build": "pnpm sync-refs && tsc -b",
     "dev": "tsc -b --watch",
     "typecheck": "node scripts/sync-refs.mjs --check && tsc -b",
+    "typecheck:tests": "pnpm -r --if-present typecheck:tests",
     "clean": "tsc -b --clean && node scripts/clean.mjs",
+    "lint": "oxlint --type-aware --type-check",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "test": "node --conditions=@acme/source --test-force-exit --test \"packages/*/src/**/*.test.ts\" \"apps/*/src/**/*.test.ts\"",
+    "test:watch": "pnpm test --watch",
+    "check": "pnpm fmt:check && pnpm lint && pnpm typecheck && pnpm typecheck:tests && pnpm test",
+    "vitest:test": "vitest run --config tools/vitest/vitest.config.ts",
+    "vitest:watch": "vitest --config tools/vitest/vitest.config.ts",
     "vp:check": "vp check",
     "vp:lint": "vp lint",
     "vp:fmt": "vp fmt",
@@ -16,8 +25,13 @@
     "vp:build": "vp run -r vp:pack"
   },
   "devDependencies": {
+    "@types/node": "^24.19.2",
+    "oxfmt": "0.74.0",
+    "oxlint": "1.89.0",
+    "oxlint-tsgolint": "7.0.2005",
     "typescript": "7.0.2",
-    "vite-plus": "^1.4.0"
+    "vite-plus": "^1.4.0",
+    "vitest": "5.0.5"
   },
   "engines": {
     "node": ">=24"

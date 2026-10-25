@@ -49,6 +49,12 @@ jobs:
       - name: Typecheck (sync-refs --check, then tsc -b)
         run: pnpm typecheck
 
+      - name: Format and lint (Oxfmt, Oxlint type-aware)
+        run: pnpm fmt:check && pnpm lint
+
+      - name: Tests (node --test; type-check the test files first)
+        run: pnpm typecheck:tests && pnpm test
+
       - name: Second build must be a no-op
         run: |
           pnpm exec tsc -b --verbose | tee build.log
@@ -60,9 +66,22 @@ jobs:
       - name: Run the CLI from source via the export condition
         run: node --conditions=@acme/source apps/cli/src/index.ts
 
-  # Opt-in Vite+ proof of concept; the raw tsc pipeline above stays the reference.
+  # Opt-in script sets. The standalone pipeline above stays the reference.
+  vitest:
+    name: vitest:* (opt-in)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm vitest:test
+
   vite-poc:
-    name: vp commands (Vite+ PoC)
+    name: vp:* (opt-in)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
