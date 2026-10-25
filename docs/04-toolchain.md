@@ -36,9 +36,9 @@ Cons: lock-in (`vite-plus` imports for tests, `vite` aliased to a VoidZero fork)
 
 ## Where to go
 
-- **Default: standalone.** `tsc -b` for builds, Oxlint/Oxfmt/`node --test` for the rest. Nothing in sources imports a vendor module.
+- **Default: standalone.** `tsc -b` for builds, Oxlint/Oxfmt/Vitest for the rest. Nothing in production sources imports a vendor module; tests import `vitest`.
 - **Reach for `vp`** when you want one entry point for a team that does not want to learn five tools, or you need bundled output: use `vp pack` only for packages that ship a bundle (a CLI, a browser lib), not for the whole graph.
-- Do not mix: if you adopt `vp`, keep tests importing `vitest`, not `vite-plus/test`. The demo `*.spec.ts` runs under both `vitest:test` and `vp:test` for this reason.
+- Do not mix: if you adopt `vp`, keep tests importing `vitest`, not `vite-plus/test`. The demo tests run under both `pnpm test` and `pnpm vp:test` for this reason.
 
 ## Why not ESLint and Prettier
 

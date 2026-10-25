@@ -1,10 +1,4 @@
 {
   "ignorePatterns": ["**/dist/**", "**/dist-vp/**", "bench/**"],
-  "options": { "typeAware": true, "typeCheck": true },
-  "overrides": [
-    {
-      "files": ["**/*.test.ts"],
-      "rules": { "typescript/no-floating-promises": "off" }
-    }
-  ]
+  "options": { "typeAware": true, "typeCheck": true }
 }

@@ -8,18 +8,18 @@ A reusable bootstrap for TypeScript projects. The reasoning, measurements and tr
 
 ## Commands
 
-| Command                                     | Does                                                         |
-| ------------------------------------------- | ------------------------------------------------------------ |
-| `pnpm build`                                | sync references, then `tsc -b`                               |
-| `pnpm dev`                                  | `tsc -b --watch`                                             |
-| `pnpm typecheck`                            | `sync-refs --check`, then `tsc -b` (use in CI)               |
-| `pnpm clean`                                | `tsc -b --clean` and remove empty `dist` folders             |
-| `pnpm sync-refs`                            | rewrite tsconfig `references` from `workspace:` deps         |
-| `pnpm lint` / `pnpm fmt` / `pnpm fmt:check` | Oxlint (type-aware) and Oxfmt                                |
-| `pnpm test`                                 | `node --test` on `*.test.ts`, workspace packages from source |
-| `pnpm check`                                | format check, lint, typecheck, test-file typecheck, tests    |
+| Command                                     | Does                                                      |
+| ------------------------------------------- | --------------------------------------------------------- |
+| `pnpm build`                                | sync references, then `tsc -b`                            |
+| `pnpm dev`                                  | `tsc -b --watch`                                          |
+| `pnpm typecheck`                            | `sync-refs --check`, then `tsc -b` (use in CI)            |
+| `pnpm clean`                                | `tsc -b --clean` and remove empty `dist` folders          |
+| `pnpm sync-refs`                            | rewrite tsconfig `references` from `workspace:` deps      |
+| `pnpm lint` / `pnpm fmt` / `pnpm fmt:check` | Oxlint (type-aware) and Oxfmt                             |
+| `pnpm test`                                 | Vitest, workspace packages resolved from source           |
+| `pnpm check`                                | format check, lint, typecheck, test-file typecheck, tests |
 
-Opt-in script sets, not used by the default pipeline: `pnpm vitest:*` ([Vitest](docs/05-testing.md)) and `pnpm vp:*` ([Vite+](docs/04-toolchain.md)).
+Opt-in script set, not used by the default pipeline: `pnpm vp:*` ([Vite+](docs/04-toolchain.md)). Tests: [docs/05-testing.md](docs/05-testing.md).
 
 TypeScript 7 only: `tsc -b --builders N` builds independent projects in parallel, `--checkers N` parallelises checking inside a project.
 

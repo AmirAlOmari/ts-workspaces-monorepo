@@ -14,7 +14,7 @@ Prev: [8. Template](08-bootstrap.md) · Index: [book](README.md)
 ## Ideas to add
 
 - Fold the standalone and test-runner measurements into `bench/run.mjs` ([7](07-benchmarks.md)).
-- Coverage for both runners.
+- Coverage with Vitest.
 - Package publishing (changesets or similar) and bundling for libraries that ship.
 - A second, non-library demo app (HTTP service) and a browser demo for Vitest DOM mode.
 - Task caching beyond `tsc -b` (remote cache) if the graph grows.

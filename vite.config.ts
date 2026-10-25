@@ -4,7 +4,7 @@ import { defineConfig } from "vite-plus";
 export default defineConfig({
   // Resolve workspace packages to their sources, like `node --conditions=@acme/source`.
   ssr: { resolve: { conditions: ["@acme/source"] } },
-  test: { include: ["{packages,apps}/*/src/**/*.spec.ts"] },
+  test: { include: ["{packages,apps}/*/src/**/*.test.ts"] },
   lint: {
     ignorePatterns: ["**/dist/**", "**/dist-vp/**", "bench/**"],
     options: { typeAware: true, typeCheck: true },
