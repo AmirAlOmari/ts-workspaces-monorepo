@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "vp:pack": "vp pack src/index.ts --dts -d dist-vp"
+  },
   "dependencies": {
     "@acme/core": "workspace:*",
     "@acme/utils": "workspace:*"
-  },
-  "main": "./dist/index.js"
+  }
 }

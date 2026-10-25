@@ -6,12 +6,12 @@
 
 ## Commands
 
-| Command | Does |
-| --- | --- |
-| `pnpm build` | sync references, then `tsc -b` |
-| `pnpm dev` | `tsc -b --watch` |
-| `pnpm typecheck` | `sync-refs --check`, then `tsc -b` (use in CI) |
-| `pnpm clean` | `tsc -b --clean` and remove empty `dist` folders |
+| Command          | Does                                                 |
+| ---------------- | ---------------------------------------------------- |
+| `pnpm build`     | sync references, then `tsc -b`                       |
+| `pnpm dev`       | `tsc -b --watch`                                     |
+| `pnpm typecheck` | `sync-refs --check`, then `tsc -b` (use in CI)       |
+| `pnpm clean`     | `tsc -b --clean` and remove empty `dist` folders     |
 | `pnpm sync-refs` | rewrite tsconfig `references` from `workspace:` deps |
 
 TypeScript 7 only: `tsc -b --builders N` builds independent projects in parallel, `--checkers N` parallelises checking inside a project.
@@ -37,3 +37,33 @@ Boundary mode: set `"disableSourceOfProjectReferenceRedirect": true` in `tsconfi
 - Never hand-edit `references`. A missing reference plus a source condition fails silently.
 - `package.json` `exports` is each package's public surface. Do not deep-import `src`.
 - The tsconfig files must stay plain JSON (no comments): `sync-refs` rewrites them.
+
+## Vite+ proof of concept (`vp:*` commands)
+
+The pnpm + `tsc` pipeline above stays the reference pipeline and is never replaced. On top of it sits an opt-in toolchain, [Vite+](https://viteplus.dev) (`vp`), which bundles Vite, Vitest, Oxlint and Oxfmt behind one dependency and one `vite.config.ts`.
+
+| Command                             | Does                                                           | Raw counterpart                         |
+| ----------------------------------- | -------------------------------------------------------------- | --------------------------------------- |
+| `pnpm vp:check`                     | format check, lint and type check in one pass                  | `pnpm typecheck`                        |
+| `pnpm vp:lint`                      | Oxlint, type-aware                                             | none (add ESLint)                       |
+| `pnpm vp:fmt` / `pnpm vp:fmt:check` | Oxfmt                                                          | none (add Prettier)                     |
+| `pnpm vp:test`                      | Vitest, workspace packages resolved from source                | `node --conditions=@acme/source --test` |
+| `pnpm vp:build`                     | `vp pack` per package in dependency order, output in `dist-vp` | `pnpm build` (output in `dist`)         |
+
+Notes:
+
+- `*.test.ts` files live next to sources and are excluded from the `tsc` projects, so the raw build never sees them.
+- Vitest resolves `@acme/*` to sources through `ssr.resolve.conditions` in `vite.config.ts`. A plain `resolve.conditions` is not enough for the test runner.
+- `vp:build` writes to `dist-vp` so both pipelines can run side by side. The packed output of a package still imports its dependencies through `exports`, which point at the raw `dist`.
+- `tsconfig.json` files are excluded from Oxfmt because `sync-refs` owns their formatting.
+- Sources import siblings with `.ts` extensions (`rewriteRelativeImportExtensions`), so Node, Vite and `tsc` all read the same files. `erasableSyntaxOnly` keeps the code runnable with Node's type stripping.
+
+## Benchmarks
+
+`bench/` generates a synthetic monorepo and times the raw pipeline against the `vp` commands and against the conventional tools (ESLint, Prettier, TypeScript 6).
+
+```sh
+node bench/gen.mjs /tmp/bench-repo --packages 40 --files 40 --layers 5
+pnpm install --ignore-workspace --dir bench/baseline
+node bench/run.mjs /tmp/bench-repo --runs 3 --pnpm10 "$(command -v pnpm10)"   # --pnpm10 is optional
+```

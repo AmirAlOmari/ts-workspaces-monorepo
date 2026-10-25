@@ -11,6 +11,8 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
     "customConditions": ["@acme/source"]
   }
 }

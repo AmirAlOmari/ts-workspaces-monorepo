@@ -10,5 +10,8 @@
       "default": "./dist/index.js"
     }
   },
+  "scripts": {
+    "vp:pack": "vp pack src/index.ts --dts -d dist-vp"
+  },
   "dependencies": {}
 }

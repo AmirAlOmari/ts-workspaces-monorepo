@@ -11,7 +11,10 @@ function readGlobs() {
   const globs = [];
   let inPackages = false;
   for (const line of text.split("\n")) {
-    if (/^packages:\s*$/.test(line)) { inPackages = true; continue; }
+    if (/^packages:\s*$/.test(line)) {
+      inPackages = true;
+      continue;
+    }
     if (inPackages) {
       const m = /^\s*-\s*["']?([^"'#\s]+)["']?/.exec(line);
       if (m) globs.push(m[1]);
