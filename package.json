@@ -2,16 +2,25 @@
   "name": "acme-monorepo",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.15.0",
-  "engines": { "node": ">=24" },
   "scripts": {
     "sync-refs": "node scripts/sync-refs.mjs",
     "build": "pnpm sync-refs && tsc -b",
     "dev": "tsc -b --watch",
     "typecheck": "node scripts/sync-refs.mjs --check && tsc -b",
-    "clean": "tsc -b --clean && node scripts/clean.mjs"
+    "clean": "tsc -b --clean && node scripts/clean.mjs",
+    "vp:check": "vp check",
+    "vp:lint": "vp lint",
+    "vp:fmt": "vp fmt",
+    "vp:fmt:check": "vp fmt --check",
+    "vp:test": "vp test",
+    "vp:build": "vp run -r vp:pack"
   },
   "devDependencies": {
-    "typescript": "7.0.2"
-  }
+    "typescript": "7.0.2",
+    "vite-plus": "^1.4.0"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@12.15.0"
 }

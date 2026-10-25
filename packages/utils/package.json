@@ -10,5 +10,10 @@
       "default": "./dist/index.js"
     }
   },
-  "dependencies": { "@acme/core": "workspace:*" }
+  "scripts": {
+    "vp:pack": "vp pack src/index.ts --dts -d dist-vp"
+  },
+  "dependencies": {
+    "@acme/core": "workspace:*"
+  }
 }

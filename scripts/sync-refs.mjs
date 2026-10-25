@@ -25,7 +25,10 @@ const changes = [];
 
 // Keep arrays of plain strings on one line, e.g. "include": ["src"].
 const format = (json) =>
-  JSON.stringify(json, null, 2).replace(/\[\s+((?:"[^"\n]*",?\s+)*"[^"\n]*")\s+\]/g, (_, items) => `[${items.replace(/\s*\n\s*/g, " ")}]`) + "\n";
+  JSON.stringify(json, null, 2).replace(
+    /\[\s+((?:"[^"\n]*",?\s+)*"[^"\n]*")\s+\]/g,
+    (_, items) => `[${items.replace(/\s*\n\s*/g, " ")}]`,
+  ) + "\n";
 
 function writeIfChanged(file, json) {
   const next = format(json);
@@ -44,8 +47,14 @@ for (const [name, { dir, deps }] of packages) {
   const refs = [];
   for (const dep of deps) {
     const target = packages.get(dep);
-    if (!target) { errors.push(`${name} depends on unknown workspace package ${dep}`); continue; }
-    if (!existsSync(join(target.dir, "tsconfig.json"))) { errors.push(`${dep} (needed by ${name}) has no tsconfig.json`); continue; }
+    if (!target) {
+      errors.push(`${name} depends on unknown workspace package ${dep}`);
+      continue;
+    }
+    if (!existsSync(join(target.dir, "tsconfig.json"))) {
+      errors.push(`${dep} (needed by ${name}) has no tsconfig.json`);
+      continue;
+    }
     refs.push({ path: toPosix(relative(dir, target.dir)) });
   }
   refs.sort((a, b) => a.path.localeCompare(b.path));
@@ -67,16 +76,29 @@ writeIfChanged(rootConfigPath, rootConfig);
 const state = new Map();
 function visit(name, stack) {
   if (state.get(name) === "done") return;
-  if (state.get(name) === "active") { errors.push(`dependency cycle: ${[...stack, name].join(" -> ")}`); return; }
+  if (state.get(name) === "active") {
+    errors.push(`dependency cycle: ${[...stack, name].join(" -> ")}`);
+    return;
+  }
   state.set(name, "active");
-  for (const dep of packages.get(name)?.deps ?? []) if (packages.has(dep)) visit(dep, [...stack, name]);
+  for (const dep of packages.get(name)?.deps ?? [])
+    if (packages.has(dep)) visit(dep, [...stack, name]);
   state.set(name, "done");
 }
 for (const name of packages.keys()) visit(name, []);
 
-if (errors.length) { console.error(errors.map((e) => `sync-refs: ${e}`).join("\n")); process.exit(1); }
-if (check && changes.length) {
-  console.error(`sync-refs: references are out of date in:\n  ${changes.join("\n  ")}\nRun \`pnpm sync-refs\`.`);
+if (errors.length) {
+  console.error(errors.map((e) => `sync-refs: ${e}`).join("\n"));
   process.exit(1);
 }
-console.log(changes.length ? `sync-refs: ${check ? "would update" : "updated"} ${changes.join(", ")}` : "sync-refs: references are in sync");
+if (check && changes.length) {
+  console.error(
+    `sync-refs: references are out of date in:\n  ${changes.join("\n  ")}\nRun \`pnpm sync-refs\`.`,
+  );
+  process.exit(1);
+}
+console.log(
+  changes.length
+    ? `sync-refs: ${check ? "would update" : "updated"} ${changes.join(", ")}`
+    : "sync-refs: references are in sync",
+);

@@ -29,7 +29,7 @@ build:
         - apps/*/tsconfig.tsbuildinfo
   script:
     - pnpm install --frozen-lockfile
-    - pnpm typecheck   # sync-refs --check, then tsc -b
+    - pnpm typecheck # sync-refs --check, then tsc -b
   artifacts:
     expire_in: 1 day
     paths:
