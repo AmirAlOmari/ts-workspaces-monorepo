@@ -1,18 +1,25 @@
 # TypeScript + pnpm monorepo template
 
+A reusable bootstrap for TypeScript projects. The reasoning, measurements and trade-offs live in the **[docs book](docs/README.md)**.
+
 - **Resolution:** pnpm `workspace:*` symlinks and package.json `exports`. No tsconfig `paths`.
 - **Build boundary:** TypeScript project references (`composite`). Dependents read only a dependency's `.d.ts` during `tsc -b`.
 - **References are generated**, never hand-edited: `pnpm sync-refs` (CI runs `--check`).
 
 ## Commands
 
-| Command          | Does                                                 |
-| ---------------- | ---------------------------------------------------- |
-| `pnpm build`     | sync references, then `tsc -b`                       |
-| `pnpm dev`       | `tsc -b --watch`                                     |
-| `pnpm typecheck` | `sync-refs --check`, then `tsc -b` (use in CI)       |
-| `pnpm clean`     | `tsc -b --clean` and remove empty `dist` folders     |
-| `pnpm sync-refs` | rewrite tsconfig `references` from `workspace:` deps |
+| Command                                     | Does                                                         |
+| ------------------------------------------- | ------------------------------------------------------------ |
+| `pnpm build`                                | sync references, then `tsc -b`                               |
+| `pnpm dev`                                  | `tsc -b --watch`                                             |
+| `pnpm typecheck`                            | `sync-refs --check`, then `tsc -b` (use in CI)               |
+| `pnpm clean`                                | `tsc -b --clean` and remove empty `dist` folders             |
+| `pnpm sync-refs`                            | rewrite tsconfig `references` from `workspace:` deps         |
+| `pnpm lint` / `pnpm fmt` / `pnpm fmt:check` | Oxlint (type-aware) and Oxfmt                                |
+| `pnpm test`                                 | `node --test` on `*.test.ts`, workspace packages from source |
+| `pnpm check`                                | format check, lint, typecheck, test-file typecheck, tests    |
+
+Opt-in script sets, not used by the default pipeline: `pnpm vitest:*` ([Vitest](docs/05-testing.md)) and `pnpm vp:*` ([Vite+](docs/04-toolchain.md)).
 
 TypeScript 7 only: `tsc -b --builders N` builds independent projects in parallel, `--checkers N` parallelises checking inside a project.
 
@@ -38,29 +45,9 @@ Boundary mode: set `"disableSourceOfProjectReferenceRedirect": true` in `tsconfi
 - `package.json` `exports` is each package's public surface. Do not deep-import `src`.
 - The tsconfig files must stay plain JSON (no comments): `sync-refs` rewrites them.
 
-## Vite+ proof of concept (`vp:*` commands)
-
-The pnpm + `tsc` pipeline above stays the reference pipeline and is never replaced. On top of it sits an opt-in toolchain, [Vite+](https://viteplus.dev) (`vp`), which bundles Vite, Vitest, Oxlint and Oxfmt behind one dependency and one `vite.config.ts`.
-
-| Command                             | Does                                                           | Raw counterpart                         |
-| ----------------------------------- | -------------------------------------------------------------- | --------------------------------------- |
-| `pnpm vp:check`                     | format check, lint and type check in one pass                  | `pnpm typecheck`                        |
-| `pnpm vp:lint`                      | Oxlint, type-aware                                             | none (add ESLint)                       |
-| `pnpm vp:fmt` / `pnpm vp:fmt:check` | Oxfmt                                                          | none (add Prettier)                     |
-| `pnpm vp:test`                      | Vitest, workspace packages resolved from source                | `node --conditions=@acme/source --test` |
-| `pnpm vp:build`                     | `vp pack` per package in dependency order, output in `dist-vp` | `pnpm build` (output in `dist`)         |
-
-Notes:
-
-- `*.test.ts` files live next to sources and are excluded from the `tsc` projects, so the raw build never sees them.
-- Vitest resolves `@acme/*` to sources through `ssr.resolve.conditions` in `vite.config.ts`. A plain `resolve.conditions` is not enough for the test runner.
-- `vp:build` writes to `dist-vp` so both pipelines can run side by side. The packed output of a package still imports its dependencies through `exports`, which point at the raw `dist`.
-- `tsconfig.json` files are excluded from Oxfmt because `sync-refs` owns their formatting.
-- Sources import siblings with `.ts` extensions (`rewriteRelativeImportExtensions`), so Node, Vite and `tsc` all read the same files. `erasableSyntaxOnly` keeps the code runnable with Node's type stripping.
-
 ## Benchmarks
 
-`bench/` generates a synthetic monorepo and times the raw pipeline against the `vp` commands and against the conventional tools (ESLint, Prettier, TypeScript 6).
+`bench/` generates a synthetic monorepo and times the raw pipeline against the `vp` commands and against the conventional tools (ESLint, Prettier, TypeScript 6). Results: [docs/07-benchmarks.md](docs/07-benchmarks.md).
 
 ```sh
 node bench/gen.mjs /tmp/bench-repo --packages 40 --files 40 --layers 5

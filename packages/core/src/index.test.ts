@@ -1,6 +1,7 @@
-import { expect, test } from "vite-plus/test";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { add } from "./index.ts";
 
 test("add sums coordinates", () => {
-  expect(add({ x: 1, y: 2 }, { x: 3, y: 4 })).toEqual({ x: 4, y: 6 });
+  assert.deepEqual(add({ x: 1, y: 2 }, { x: 3, y: 4 }), { x: 4, y: 6 });
 });

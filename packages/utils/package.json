@@ -11,6 +11,7 @@
     }
   },
   "scripts": {
+    "typecheck:tests": "tsc -p tsconfig.test.json",
     "vp:pack": "vp pack src/index.ts --dts -d dist-vp"
   },
   "dependencies": {

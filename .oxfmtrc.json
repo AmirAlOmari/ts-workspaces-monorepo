@@ -1,0 +1,3 @@
+{
+  "ignorePatterns": ["**/dist/**", "**/dist-vp/**", "**/tsconfig.json", "pnpm-lock.yaml"]
+}
