@@ -13,5 +13,6 @@ A reusable starting point for TypeScript projects: pnpm workspaces for linking, 
 | [7. Benchmarks](07-benchmarks.md)                                   | Measured numbers and how to rerun them                                     |
 | [8. Using this as a template](08-bootstrap.md)                      | Start a project, add a package, upgrade tools                              |
 | [9. Roadmap and open questions](09-roadmap.md)                      | What was not verified, what to add next                                    |
+| [10. `tsc -b` versus Nx](10-nx.md)                                  | Task runner and remote cache against project references, measured          |
 
 Conventions: a claim marked **to verify** was reasoned or read from docs, not run here. Everything else was run on the versions in [overview](01-overview.md#versions).
